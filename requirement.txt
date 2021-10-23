@@ -1,0 +1,4 @@
+confluent-kafka
+google-cloud-pubsub
+tensorflow-gpu==2.3.2
+opency-python
