@@ -1,8 +1,11 @@
 import cv2
 from confluent_kafka import Producer
 import os
+import socket
 
-p = Producer({'bootstrap.servers': 'localhost:9092'})
+p = Producer({'bootstrap.servers': 'localhost:29092', 'client.id': "localhost"})
+
+TEST_IMAGE_DIR = "../test_images/"
 
 
 def delivery_report(err, msg):
@@ -14,9 +17,9 @@ def delivery_report(err, msg):
         print('Message delivered to {} [{}]'.format(msg.topic(), msg.partition()))
 
 
-for data in os.listdir("../test_images"):
+for data in os.listdir(TEST_IMAGE_DIR):
     print(data)
-    img = cv2.imread("../test_images/"+data, 0)
+    img = cv2.imread(TEST_IMAGE_DIR + data, 0)
     # print(img.shape)
     encoded_image = img.tobytes()
     # decoded_image = np.reshape(np.frombuffer(encoded_image, dtype=np.uint8), (1, 28, 28, 1))
@@ -31,3 +34,14 @@ for data in os.listdir("../test_images"):
 # Wait for any outstanding messages to be delivered and delivery report
 # callbacks to be triggered.
 p.flush()
+
+# from confluent_kafka.admin import AdminClient
+#
+# kafka_broker = {'bootstrap.servers': 'localhost:9092'}
+# admin_client = AdminClient(kafka_broker)
+# topics = admin_client.list_topics().topics
+#
+# if not topics:
+#     raise RuntimeError()
+# else:
+#     print(topics)
